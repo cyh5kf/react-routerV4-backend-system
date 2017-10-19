@@ -3,7 +3,7 @@ import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import _ from 'underscore';
 const SubMenu = Menu.SubMenu;
-import { menuEnum } from '../../enum/menuEnum';
+import { menuList } from '../../enum/menuList';
 import { getCurrentOpenKeys } from '../../utils/utils'
 import './AppSidebarView.less';
 
@@ -19,7 +19,7 @@ export default class AppSidebarView extends React.Component {
 
     componentWillMount() {
         const { menuCurrent } = this.props.store;
-        let currentOpenKeys = getCurrentOpenKeys(menuCurrent, menuEnum);
+        let currentOpenKeys = getCurrentOpenKeys(menuCurrent, menuList);
         console.log(`currentOpenKeys: ${currentOpenKeys}`);
 
         this.setState({
@@ -55,6 +55,26 @@ export default class AppSidebarView extends React.Component {
         return map[key] || [];
     }
 
+    creatMenuList = (menuList) => {
+        let menuListDom = _.map(menuList, function(sub){
+            return (
+                <SubMenu key={sub.subKey} title={<span><Icon type={sub.subIcon} /><span>{sub.subName}</span></span>}>
+                    {_.map(sub.menuItem, function(menu){
+                        return (
+                            <Menu.Item key={menu.path}>
+                                <Link to={menu.path}>
+                                    <Icon type={menu.icon}/>
+                                    {menu.name}
+                                </Link>
+                            </Menu.Item>
+                        );
+                    })}
+                </SubMenu>
+            );
+        })
+        return menuListDom;
+    }
+
     render() {
 
         var { isSideBarFold } = this.props.store;
@@ -74,22 +94,7 @@ export default class AppSidebarView extends React.Component {
                 onOpenChange={this.onOpenChange}
                 onClick={this.handleClick}
                 >
-                    <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
-                        <Menu.Item key="/home/page1"><Link to="/home/page1"><Icon type="home" />page1</Link></Menu.Item>
-                        <Menu.Item key="/home/page2"><Link to="/home/page2"><Icon type="line-chart" />page2</Link></Menu.Item>
-                        <Menu.Item key="3">Option 3</Menu.Item>
-                        <Menu.Item key="4">Option 4</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>Navigation Two</span></span>}>
-                        <Menu.Item key="5">Option 5</Menu.Item>
-                        <Menu.Item key="6">Option 6</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub3" title={<span><Icon type="setting" /><span>Navigation Three</span></span>}>
-                        <Menu.Item key="9">Option 9</Menu.Item>
-                        <Menu.Item key="10">Option 10</Menu.Item>
-                        <Menu.Item key="11">Option 11</Menu.Item>
-                        <Menu.Item key="12">Option 12</Menu.Item>
-                    </SubMenu>
+                    {this.creatMenuList(menuList)}
                 </Menu>
             </div>
         );

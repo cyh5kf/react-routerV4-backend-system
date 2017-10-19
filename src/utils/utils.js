@@ -1,9 +1,10 @@
-export const getCurrentOpenKeys = (menuCurrent, menuEnum) => {
+export const getCurrentOpenKeys = (menuCurrent, menuList) => {
     let currentOpenKeys = [];
-    for( let key in menuEnum) {
-        for( let item of menuEnum[key]) {
-            if (item.indexOf(menuCurrent) !== -1) {
-                currentOpenKeys.push(key);
+    for( let sub of menuList) {
+        for( let item of sub.menuItem) {
+            let itemPath = item.path;
+            if (itemPath.indexOf(menuCurrent) !== -1) {
+                currentOpenKeys.push(sub.subKey);
                 break;
             }
         }
